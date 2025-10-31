@@ -1,0 +1,42 @@
+<!-- Tarjeta de película estilo Netflix -->
+<div class="group relative overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer bg-netflix-dark">
+  
+  <!-- Imagen -->
+  <div class="aspect-w-2 aspect-h-3 relative">
+    <img 
+      src="/uploads/<%= movie.image %>" 
+      alt="<%= movie.title %>"
+      class="w-full h-64 object-cover rounded-t-lg transition-transform duration-500 group-hover:scale-110"
+      loading="lazy"
+    >
+    
+    <!-- Overlay al hacer hover -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    
+    <!-- Play icon en hover -->
+    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <div class="bg-netflix-red/90 p-4 rounded-full transform scale-0 group-hover:scale-100 transition-transform duration-300">
+        <i class="fas fa-play text-white text-2xl ml-1"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido -->
+  <div class="p-4 space-y-1">
+    <h4 class="text-lg font-bold text-white line-clamp-1 group-hover:text-netflix-red transition-colors">
+      <%= movie.title %>
+    </h4>
+    <p class="text-sm text-gray-400 flex items-center gap-2">
+      <i class="fas fa-tag text-netflix-red"></i>
+      <span><%= movie.genre %></span>
+      <span class="text-gray-500">•</span>
+      <i class="fas fa-calendar-alt text-netflix-red"></i>
+      <span><%= movie.year %></span>
+    </p>
+  </div>
+
+  <!-- Ribbon de año (opcional) -->
+  <div class="absolute top-2 right-2 bg-netflix-red text-white text-xs font-bold px-2 py-1 rounded">
+    <%= movie.year %>
+  </div>
+</div>

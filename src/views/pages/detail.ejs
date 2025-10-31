@@ -1,0 +1,89 @@
+<% layout('layout/main') %>
+
+<!-- Contenedor principal -->
+<div class="max-w-6xl mx-auto px-6 py-8">
+
+  <!-- Título de la película -->
+  <h2 class="text-4xl md:text-6xl font-bold text-white mb-8 flex items-center gap-4">
+    <i class="fas fa-film text-netflix-red text-5xl md:text-7xl"></i>
+    <%= movie.title %>
+  </h2>
+
+  <!-- Grid: Imagen + Info + Tráiler -->
+  <div class="grid md:grid-cols-3 gap-8">
+
+    <!-- Columna 1: Imagen de portada -->
+    <div class="md:col-span-1">
+      <div class="group relative overflow-hidden rounded-xl shadow-2xl">
+        <img 
+          src="/uploads/<%= movie.image %>" 
+          alt="<%= movie.title %>"
+          class="w-full h-auto object-cover rounded-xl transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+        >
+        <!-- Overlay degradado -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60"></div>
+        
+        <!-- Info en la imagen -->
+        <div class="absolute bottom-4 left-4 text-white space-y-1">
+          <p class="text-sm font-medium flex items-center gap-2">
+            <i class="fas fa-calendar-alt text-netflix-red"></i> <%= movie.year %>
+          </p>
+          <p class="text-sm flex items-center gap-2">
+            <i class="fas fa-tag text-netflix-red"></i> <%= movie.genre %>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna 2: Descripción -->
+    <div class="md:col-span-1 space-y-6">
+      <div>
+        <h3 class="text-xl font-bold text-white mb-3 flex items-center gap-2">
+          <i class="fas fa-info-circle text-netflix-red"></i> Sinopsis
+        </h3>
+        <p class="text-gray-300 leading-relaxed text-lg">
+          <%= movie.description || 'Sin descripción disponible.' %>
+        </p>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="flex flex-col sm:flex-row gap-4 pt-4">
+        <a href="/public" 
+           class="inline-flex items-center justify-center gap-2 bg-netflix-red hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+          <i class="fas fa-arrow-left"></i>
+          Volver al catálogo
+        </a>
+        <a href="/admin" 
+           class="inline-flex items-center justify-center gap-2 bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200">
+          <i class="fas fa-cog"></i>
+          Panel Admin
+        </a>
+      </div>
+    </div>
+
+    <!-- Columna 3: Tráiler -->
+    <div class="md:col-span-1">
+      <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+        <i class="fab fa-youtube text-netflix-red"></i> Tráiler oficial
+      </h3>
+      <div class="relative overflow-hidden rounded-xl shadow-2xl aspect-video">
+        <iframe 
+          class="absolute inset-0 w-full h-full"
+          src="https://www.youtube.com/embed/<%= youtubeId %>"
+          title="Tráiler de <%= movie.title %>"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          loading="lazy">
+        </iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metadatos adicionales (opcional) -->
+  <div class="mt-12 pt-8 border-t border-gray-700 text-sm text-gray-400">
+    <p><strong>ID:</strong> #<%= movie.id %></p>
+    <p><strong>Subido:</strong> <%= new Date(movie.createdAt || Date.now()).toLocaleDateString('es-PE') %></p>
+  </div>
+</div>
