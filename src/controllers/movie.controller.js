@@ -1,5 +1,5 @@
 import { MovieModel } from "../models/movie.model.js";
-import youtube from "../utils/youtube.js";  // <-- importa la función
+import youtube from "../utils/youtube.js";
 
 export const MovieController = {
   home(req, res) {
@@ -7,13 +7,23 @@ export const MovieController = {
   },
 
   async publicList(req, res) {
-    const movies = await MovieModel.getAll();
-    res.render("pages/public-list", { movies });
+    try {
+      const movies = await MovieModel.getAll();
+      res.render("pages/public-list", { movies });
+    } catch (error) {
+      console.error(error);
+      res.status(500).render("pages/error", { message: "Error al cargar películas públicas" });
+    }
   },
 
   async adminList(req, res) {
-    const movies = await MovieModel.getAll();
-    res.render("pages/admin-list", { movies });
+    try {
+      const movies = await MovieModel.getAll();
+      res.render("pages/admin-list", { movies });
+    } catch (error) {
+      console.error(error);
+      res.status(500).render("pages/error", { message: "Error al cargar películas de administración" });
+    }
   },
 
   createForm(req, res) {
@@ -21,54 +31,99 @@ export const MovieController = {
   },
 
   async create(req, res) {
-    const { title, description, year, genre, trailer_url } = req.body;
-    const image = req.file ? req.file.filename : null;
-    const errors = [];
-    if (!title || title.trim() === "") errors.push("El título es obligatorio.");
-    if (!description || description.trim() === "") errors.push("La descripción es obligatoria.");
-    if (!year || isNaN(Number(year))) errors.push("El año es obligatorio y debe ser un número.");
-    if (!genre || genre.trim() === "") errors.push("El género es obligatorio.");
-    if (!trailer_url || trailer_url.trim() === "") errors.push("La URL del trailer es obligatoria.");
+    try {
+      const { title, description, year, genre, trailer_url } = req.body;
+      const image = req.file ? req.file.filename : null;
 
-    if (errors.length > 0) {
-      return res.status(400).json({ success: false, errors });
+      const errors = [];
+      if (!title?.trim()) errors.push("El título es obligatorio.");
+      if (!description?.trim()) errors.push("La descripción es obligatoria.");
+      if (!year || isNaN(Number(year))) errors.push("El año es obligatorio y debe ser un número.");
+      if (!genre?.trim()) errors.push("El género es obligatorio.");
+      if (!trailer_url?.trim()) errors.push("La URL del trailer es obligatoria.");
+
+      if (errors.length > 0) {
+        return res.render("pages/create", { errors, movie: req.body });
+      }
+
+      await MovieModel.create({
+        title: title.trim(),
+        description: description.trim(),
+        year: Number(year),
+        genre: genre.trim(),
+        image,
+        trailerUrl: trailer_url.trim(),
+      });
+
+      return res.redirect("/admin");
+    } catch (error) {
+      console.error(error);
+      return res.status(500).render("pages/error", { message: `Error al crear película: ${error.message}` });
     }
-    await MovieModel.create({ title, description, year, genre, image, trailer_url });
-    res.redirect("/admin");
   },
 
   async editForm(req, res) {
-    const movie = await MovieModel.getById(req.params.id);
-    res.render("pages/edit", { movie });
+    try {
+      const movie = await MovieModel.getById(req.params.id);
+      res.render("pages/edit", { movie });
+    } catch (error) {
+      console.error(error);
+      res.status(404).render("pages/error", { message: "Película no encontrada" });
+    }
   },
 
   async update(req, res) {
-    const { title, description, year, genre, trailer_url, oldImage } = req.body;
-    const id = req.params.id;
-    const image = req.file ? req.file.filename : oldImage;
+    try {
+      const { title, description, year, genre, trailer_url, oldImage } = req.body;
+      const { id } = req.params;
+      const image = req.file ? req.file.filename : oldImage;
+
       const errors = [];
-      if (!title || title.trim() === "") errors.push("El título es obligatorio.");
-      if (!description || description.trim() === "") errors.push("La descripción es obligatoria.");
+      if (!title?.trim()) errors.push("El título es obligatorio.");
+      if (!description?.trim()) errors.push("La descripción es obligatoria.");
       if (!year || isNaN(Number(year))) errors.push("El año es obligatorio y debe ser un número.");
-      if (!genre || genre.trim() === "") errors.push("El género es obligatorio.");
-      if (!trailer_url || trailer_url.trim() === "") errors.push("La URL del trailer es obligatoria.");
+      if (!genre?.trim()) errors.push("El género es obligatorio.");
+      if (!trailer_url?.trim()) errors.push("La URL del trailer es obligatoria.");
 
       if (errors.length > 0) {
-        return res.status(400).json({ success: false, errors });
+        const movie = { id, title, description, year, genre, trailer_url, image };
+        return res.render("pages/edit", { errors, movie });
       }
-    await MovieModel.update(id, { title, description, year, genre, image, trailer_url });
-    res.redirect("/admin");
+
+      await MovieModel.update(id, {
+        title: title.trim(),
+        description: description.trim(),
+        year: Number(year),
+        genre: genre.trim(),
+        image,
+        trailerUrl: trailer_url.trim(),
+      });
+
+      return res.redirect("/admin");
+    } catch (error) {
+      console.error(error);
+      return res.status(500).render("pages/error", { message: `Error al actualizar película: ${error.message}` });
+    }
   },
 
   async delete(req, res) {
-    await MovieModel.delete(req.params.id);
-    res.redirect("/admin");
+    try {
+      await MovieModel.delete(req.params.id);
+      return res.redirect("/admin");
+    } catch (error) {
+      console.error(error);
+      return res.status(500).render("pages/error", { message: `Error al eliminar película: ${error.message}` });
+    }
   },
 
-  // <-- Aquí se modifica para pasar el ID de YouTube a la vista
   async detail(req, res) {
-    const movie = await MovieModel.getById(req.params.id);
-    const youtubeId = youtube(movie.trailer_url); // extrae ID
-    res.render("pages/detail", { movie, youtubeId });
-  }
+    try {
+      const movie = await MovieModel.getById(req.params.id);
+      const youtubeId = youtube(movie.trailer_url); 
+      res.render("pages/detail", { movie, youtubeId });
+    } catch (error) {
+      console.error(error);
+      res.status(404).render("pages/error", { message: "Película no encontrada" });
+    }
+  },
 };
