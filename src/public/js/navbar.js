@@ -60,3 +60,22 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }, 500);
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Animación del título y botón Crear
+  const title = document.getElementById("admin-title");
+  const createBtn = document.getElementById("create-btn");
+  const tableContainer = document.getElementById("table-container");
+
+  setTimeout(() => title.classList.remove("opacity-0", "translate-y-6"), 100);
+  setTimeout(() => createBtn.classList.remove("opacity-0", "translate-y-6"), 300);
+  setTimeout(() => tableContainer.classList.remove("opacity-0", "translate-y-6"), 500);
+
+  // Animación de filas de la tabla (fade + slide secuencial)
+  const rows = tableContainer.querySelectorAll("tbody tr");
+  rows.forEach((row, index) => {
+    setTimeout(() => {
+      row.classList.remove("opacity-0", "translate-y-6");
+    }, 600 + index * 100); // retraso secuencial por fila
+  });
+});
