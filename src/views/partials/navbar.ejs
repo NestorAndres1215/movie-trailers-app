@@ -6,33 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MovieTrailers - Navbar</title>
 
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-    <!-- Colores y fuente estilo Netflix -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        netflix: {
-                            red: '#E50914',
-                            black: '#141414',
-                            dark: '#221f1f',
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['"Bebas Neue"', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 </head>
 
@@ -90,13 +67,8 @@
 
     <!-- Espaciador para contenido debajo del navbar fijo -->
     <div class="h-20"></div>
+    <script src="/js/navbar.js"></script>
 
-    <!-- Script para menú móvil -->
-    <script>
-        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
-        });
-    </script>
 </body>
 
 </html>
