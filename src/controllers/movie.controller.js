@@ -23,7 +23,16 @@ export const MovieController = {
   async create(req, res) {
     const { title, description, year, genre, trailer_url } = req.body;
     const image = req.file ? req.file.filename : null;
+    const errors = [];
+    if (!title || title.trim() === "") errors.push("El título es obligatorio.");
+    if (!description || description.trim() === "") errors.push("La descripción es obligatoria.");
+    if (!year || isNaN(Number(year))) errors.push("El año es obligatorio y debe ser un número.");
+    if (!genre || genre.trim() === "") errors.push("El género es obligatorio.");
+    if (!trailer_url || trailer_url.trim() === "") errors.push("La URL del trailer es obligatoria.");
 
+    if (errors.length > 0) {
+      return res.status(400).json({ success: false, errors });
+    }
     await MovieModel.create({ title, description, year, genre, image, trailer_url });
     res.redirect("/admin");
   },
@@ -37,7 +46,16 @@ export const MovieController = {
     const { title, description, year, genre, trailer_url, oldImage } = req.body;
     const id = req.params.id;
     const image = req.file ? req.file.filename : oldImage;
+      const errors = [];
+      if (!title || title.trim() === "") errors.push("El título es obligatorio.");
+      if (!description || description.trim() === "") errors.push("La descripción es obligatoria.");
+      if (!year || isNaN(Number(year))) errors.push("El año es obligatorio y debe ser un número.");
+      if (!genre || genre.trim() === "") errors.push("El género es obligatorio.");
+      if (!trailer_url || trailer_url.trim() === "") errors.push("La URL del trailer es obligatoria.");
 
+      if (errors.length > 0) {
+        return res.status(400).json({ success: false, errors });
+      }
     await MovieModel.update(id, { title, description, year, genre, image, trailer_url });
     res.redirect("/admin");
   },
